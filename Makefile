@@ -1,0 +1,72 @@
+########################################################################
+####################### Makefile Template ##############################
+########################################################################
+
+# Makefile settings - Can be customized.
+APPNAME = csm
+
+SRCEXT = .cpp
+INCEXT = .h
+
+SRCDIR = src
+INCDIR = $(SRCDIR)/include
+INCFLAG = -I$(INCDIR)
+
+OBJDIR = obj
+
+# Compiler settings - Can be customized.
+CC = g++
+# CXXFLAGS = -std=c++11 -Wall
+CXXFLAGS = -std=c++11 $(INCFLAG)
+LDFLAGS = 
+
+############## Do not change anything from here downwards! #############
+# SRC = $(wildcard $(SRCDIR)/*$(SRCEXT))
+SRC = \
+	$(SRCDIR)/main.cpp
+
+INC = $(wildcard $(INCDIR)/*$(INCEXT))
+OBJ = $(SRC:$(SRCDIR)/%$(SRCEXT)=$(OBJDIR)/%.o)
+# UNIX-based OS variables & settings
+RM = rm
+DELOBJ = $(OBJ)
+# Windows OS variables & settings
+DEL = del
+EXE = .exe
+WDELOBJ = $(SRC:$(SRCDIR)/%$(SRCEXT)=$(OBJDIR)\\%.o)
+
+########################################################################
+####################### Targets beginning here #########################
+########################################################################
+
+all: $(APPNAME)
+
+# Builds the app
+$(APPNAME): $(OBJ)
+	$(CC) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+
+# Building rule for .o files and its .c/.cpp in combination with all .h
+$(OBJDIR)/%.o: $(SRCDIR)/%$(SRCEXT) $(INC)
+	$(CC) $(CXXFLAGS) -o $@ -c $<
+
+################### Cleaning rules for Unix-based OS ###################
+# Cleans complete project
+.PHONY: clean
+clean:
+	$(RM) $(DELOBJ) $(DEP) $(APPNAME)
+
+# Cleans only all files with the extension .d
+.PHONY: cleandep
+cleandep:
+	$(RM) $(DEP)
+
+#################### Cleaning rules for Windows OS #####################
+# Cleans complete project
+.PHONY: cleanw
+cleanw:
+	$(DEL) $(WDELOBJ) $(DEP) $(APPNAME)$(EXE)
+
+# Cleans only all files with the extension .d
+.PHONY: cleandepw
+cleandepw:
+	$(DEL) $(DEP)

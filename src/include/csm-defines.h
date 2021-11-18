@@ -1,0 +1,4 @@
+typedef enum {
+    MAIN_CSM_RETURN_NO_ERROR,
+    // MAIN_CSM_RETURN_,
+} MAIN_CSM_RETURN_ENUM;
