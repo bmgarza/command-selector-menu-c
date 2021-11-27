@@ -1,0 +1,3 @@
+[submodule "lib/microjson"]
+	path = lib/microjson
+	url = https://gitlab.com/esr/microjson.git

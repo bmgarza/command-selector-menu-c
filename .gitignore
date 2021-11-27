@@ -1,3 +1,5 @@
 obj/
+bin/
 
+# This is the name of the binary that we are going to be producing
 csm
