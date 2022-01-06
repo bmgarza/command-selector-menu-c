@@ -1,3 +1,6 @@
 [submodule "lib/microjson"]
 	path = lib/microjson
 	url = https://gitlab.com/esr/microjson.git
+[submodule "lib/log.c"]
+	path = lib/log.c
+	url = https://github.com/rxi/log.c.git
