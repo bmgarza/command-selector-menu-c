@@ -5,7 +5,7 @@
 # Compiler settings - Can be customized.
 CPP = g++
 CPPFLAGS = -std=c++11 -Wall -O2
-LDFLAGS = 
+LDFLAGS =
 
 CC = gcc
 CCFLAGS = -Wall -O2
@@ -19,20 +19,31 @@ INCDIR = $(SRCDIR)/include
 MJSONDIR = lib/microjson
 INCFLAGS = -I$(INCDIR) -I$(MJSONDIR)
 
+# NOTE: BMG (Jan. 04, 2022) We handle the log.c submodule differently than we handle microjson. We are always going to
+#  check if we need to copy over the files from log.c to our source to make sure that we always have the latest from the
+#  log.c repository.
+LOGCDIR = lib/log.c/src
+
 OBJDIR = obj
 
 BINDIR = bin
 
-############## Do not change anything from here downwards! #############
 # TODO: BMG (Nov. 25, 2021) Make sure you change this to be cpp specific
 CPPSRC = \
 	$(SRCDIR)/main.cpp \
 	$(SRCDIR)/csm-commandline-arguments.cpp \
-	$(SRCDIR)/csm-print-dialogs.cpp \
 	$(SRCDIR)/csm-utilities.cpp
 
 CCSRC = \
-	$(SRCDIR)/color-print-lib.c
+	$(SRCDIR)/color-print-lib.c \
+	$(SRCDIR)/csm-print-dialogs.c \
+	$(SRCDIR)/json-process-utils.c \
+	$(SRCDIR)/log.c
+
+COPY_FILES = \
+	$(SRCDIR)/csm-test.json
+
+BINDIR_COPY_FILES = $(COPY_FILES:$(SRCDIR)/%=$(BINDIR)/%)
 
 CPPSRCOBJ = \
 	$(CPPSRC:$(SRCDIR)/%.cpp=$(OBJDIR)/%.o)
@@ -48,7 +59,7 @@ BLDOBJ = \
 DEP = $(SRCOBJ:$(OBJDIR)/%.o=$(OBJDIR)/%.d)
 # UNIX-based OS variables & settings
 RM = rm
-DELOBJ = $(CPPSRCOBJ)
+DELOBJ = $(BLDOBJ)
 # Windows OS variables & settings
 DEL = del
 EXE = .exe
@@ -66,9 +77,11 @@ makedirs:
 	@mkdir -p $(BINDIR)
 
 # Builds the app
-$(APPNAME): $(BLDOBJ)
+$(APPNAME): $(BINDIR_COPY_FILES) $(BINDIR)/$(APPNAME)
+
+$(BINDIR)/$(APPNAME): $(BLDOBJ)
 	@echo "$(CPP) Building Application: $@"
-	@$(CPP) $(CPPFLAGS) -o $(BINDIR)/$@ $^ $(LDFLAGS)
+	@$(CPP) $(CPPFLAGS) -o $@ $^ $(LDFLAGS)
 
 # Creates the dependecy rules
 %.d: ../$(SRCDIR)/%.cpp
@@ -81,6 +94,11 @@ $(APPNAME): $(BLDOBJ)
 #  application.
 $(MJSONDIR)/mjson.o: $(MJSONDIR)/mjson.c $(MJSONDIR)/mjson.h
 	$(MAKE) -C $(MJSONDIR) mjson.o
+
+# NOTE: BMG (Jan. 04, 2022) Copy over any non-source files over to the bin directory
+$(BINDIR)/%: $(SRCDIR)/%
+	@echo "Copying file: $<"
+	@cp -r $< $@
 
 # Includes all .h files
 # NOTE: BMG (Nov. 23, 2021) This line is basically pulling in all the .d files in the obj directory to make sure that we
@@ -96,11 +114,15 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@echo "$(CC) Compiling: $<"
 	@$(CC) $(CCFLAGS) $(INCFLAGS) -o $@ -c $<
 
+$(OBJDIR)/log.o: $(SRCDIR)/log.c
+	@echo "$(CC) Compiling: $<"
+	@$(CC) $(CCFLAGS) -DLOG_USE_COLOR $(INCFLAGS) -o $@ -c $<
+
 ################### Cleaning rules for Unix-based OS ###################
 # Cleans complete project
 .PHONY: clean
 clean:
-	$(RM) $(DELOBJ) $(DEP) $(BINDIR)/$(APPNAME)
+	$(RM) $(DELOBJ) $(DEP) $(BINDIR)/$(APPNAME) $(BINDIR_COPY_FILES)
 
 # Cleans only all files with the extension .d
 .PHONY: cleandep

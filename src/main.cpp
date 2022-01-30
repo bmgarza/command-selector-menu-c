@@ -8,8 +8,11 @@
 #include "csm-utilities.h"
 #include "color-print-lib.h"
 
+#include "log.h"
+
 int main(int argc, char *argv[]) {
-    DEBUG_CMD printf_debug("This is the beginning of the application\n");
+    log_set_level(LOG_DEBUG);
+    log_debug("This is the beginning of the application.");
 
     bool ret_bool = true;
 
@@ -36,11 +39,11 @@ int main(int argc, char *argv[]) {
         //  the csm binary
         ret_bool = csm_get_binary_working_dir(cmd_args.filename_string, MAX_FILENAME_STRING_SIZE);
         if (!ret_bool) {
-            printf_error("Couldn't get the working directory of the binary.");
+            log_error("Couldn't get the working directory of the binary.");
             return MAIN_CSM_RETURN_BINARY_PATH_ERROR;
         }
         strcat(cmd_args.filename_string, "/" DEFAULT_CSM_JSON_RELATIVE_PATH);
-        DEBUG_CMD printf_debug("Calculated path to csm.json: %s\n", cmd_args.filename_string);
+        log_debug("Calculated path to csm.json: %s", cmd_args.filename_string);
     }
 
     // TODO: BMG (Nov. 24, 2021) Work on opening the file and checking to make sure that there were no errors. The next
@@ -54,7 +57,7 @@ int main(int argc, char *argv[]) {
     //     return MAIN_CSM_RETURN_CSM_JSON_FILE_OPEN_ERROR;
     // }
 
-    printf_error("This program is still not in a finished state.\n");
+    log_error("This program is still not in a finished state.");
 
     return MAIN_CSM_RETURN_NOT_FINISHED;
     // return MAIN_CSM_RETURN_NO_ERROR;

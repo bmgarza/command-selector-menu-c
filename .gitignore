@@ -1,5 +1,10 @@
 obj/
 bin/
 
+# This is the log.c specific ignore files because these files shouldn't be committed into this repository, instead they
+#  should only live in the log.c repository that we pulled.
+src/log.c
+src/include/log.h
+
 # This is the name of the binary that we are going to be producing
 csm

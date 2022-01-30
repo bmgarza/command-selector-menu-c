@@ -1,0 +1,153 @@
+{
+    "subCategory": [
+        {
+            "name": "git",
+            "isCommand": false,
+            "subCategory": [
+                {
+                    "name": "Branch Management",
+                    "subCategory": [
+                        {
+                            "name": "Delete remote and local branch",
+                            "description": "Delete specific branch from local and remote.",
+                            "command": [
+                                "git remote prune origin",
+                                "git branch -la",
+                                "$branch = Read-Host 'What branch do you want to delete'",
+                                "git branch -d $branch",
+                                "git push origin --delete $branch"
+                            ],
+                            "commandExecEnvironment": "powershell",
+                            "commandSingleSession": true
+                        },
+                        {
+                            "name": "Prune remote and local branches",
+                            "description": "Prune the remote branches of the current git repository.",
+                            "command": [
+                                "git remote prune origin",
+                                "git branch -D @(git for-each-ref --format '%(refname:short) %(upstream:track)' refs/heads | select-string -AllMatch '\\[gone\\]' | Foreach {$_.Line.split()[0]})"
+                            ],
+                            "commandExecEnvironment": "powershell",
+                            "commandConfirm": true
+                        },
+                        {
+                            "name": "Delete all local branches",
+                            "description": "Delete all local branches, other than master, for the current git repository.",
+                            "command": [
+                                "git branch -D @(git branch | select-string -NotMatch 'master' | Foreach {$_.Line.Trim()})"
+                            ],
+                            "commandExecEnvironment": "powershell",
+                            "commandConfirm": true
+                        }
+                    ]
+                },
+                {
+                    "name": "Init submodules",
+                    "description": "Initialize all the submodules in the current project.",
+                    "command": [
+                        "git submodule update --init"
+                    ]
+                },
+                {
+                    "name": "Pull submodules",
+                    "description": "Do a pull on all the submodules.",
+                    "command": [
+                        "git pull --recurse-submodules"
+                    ]
+                },
+                {
+                    "name": "Full git hash",
+                    "description": "Get the full hash of the branch's current commit.",
+                    "command": [
+                        "git rev-parse HEAD"
+                    ]
+                },
+                {
+                    "name": "Short git hash",
+                    "description": "Get the shortened hash of the branch's current commit.",
+                    "command": [
+                        "$(git rev-parse HEAD).Substring(0, 7)"
+                    ],
+                    "commandExecEnvironment": "powershell"
+                }
+            ]
+        },
+        {
+            "name": "Windows Power-user",
+            "isCommand": false,
+            "subCategory": [
+                {
+                    "name": "Open Explorer Here",
+                    "description": "Open the Windows explorer in the current directory.",
+                    "command": [
+                        "start ."
+                    ]
+                },
+                {
+                    "name": "Open VSCode Here",
+                    "description": "Open the current directory in VS Code.",
+                    "command": [
+                        "code ."
+                    ]
+                },
+                {
+                    "name": "Open Profile in VSCode",
+                    "description": "Open the powershell profile in a VSCode window.",
+                    "command": [
+                        "code -n $PROFILE"
+                    ],
+                    "commandExecEnvironment": "powershell"
+                },
+                {
+                    "name": "Substitute Directory",
+                    "description": "Assign the current directory to the drive letter P:\\",
+                    "command": [
+                        "subst P: $(Get-Location).Path"
+                    ],
+                    "commandExecEnvironment": "powershell"
+                },
+                {
+                    "name": "Replace Substituted Directory",
+                    "description": "Assign the current directory to the drive letter P:\\",
+                    "command": [
+                        "subst P: /d",
+                        "subst P: $(Get-Location).Path"
+                    ],
+                    "commandExecEnvironment": "powershell"
+                },
+                {
+                    "name": "Remove P: drive",
+                    "description": "Remove the P:\\ substitute directory.",
+                    "command": [
+                        "subst P: /d"
+                    ],
+                    "commandExecEnvironment": "powershell"
+                }
+            ]
+        },
+        {
+            "name": "csm",
+            "isCommand": false,
+            "subCategory": [
+                {
+                    "name": "Edit csm.json",
+                    "description": "Open the csm.json in a new VS Code window.",
+                    "isCommand": true,
+                    "command": [
+                        "code -n C:\\devel\\csm\\csm.json"
+                    ]
+                },
+                {
+                    "name": "Test Command",
+                    "isCommand": true,
+                    "command": [
+                        "$branch = Read-Host 'What branch do you want to delete'",
+                        "echo $branch"
+                    ],
+                    "commandExecEnvironment": "powershell",
+                    "commandSingleSession": true
+                }
+            ]
+        }
+    ]
+}

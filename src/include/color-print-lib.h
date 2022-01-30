@@ -34,8 +34,23 @@ extern "C" {
 #define COLOR_LIGHT_CYAN    "\033[1;36m"
 #define COLOR_WHITE         "\033[1;37m"
 
+/**
+ * @brief Works like printf, but appends a Yellow DEBUG: at the beginning of what is printed.
+ */
 void printf_debug(const char *string,...);
+
+/**
+ * @brief Works like printf, but appends a Red ERROR: at the beginning of what is printed.
+ */
 void printf_error(const char *string,...);
+
+/**
+ * @brief Works like printf, but allows for a custom color to be used. The whole string is the same color.
+ * 
+ * @param color_code 
+ * @param string 
+ * @param ... 
+ */
 void printf_color(const char *color_code, const char *string,...);
 
 #ifdef __cplusplus

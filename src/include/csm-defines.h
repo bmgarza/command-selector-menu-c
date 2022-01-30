@@ -1,9 +1,6 @@
 #ifndef CSM_DEFINES_H
 #define CSM_DEFINES_H
 
-#define DEBUG 1
-#define DEBUG_CMD if (DEBUG)
-
 // NOTE: BMG (Nov. 23, 2021) This isn't a very interesting version indicator, it's a single number and it should be
 //  incremented by one any time the version of the application is updated.
 #define CSM_APPLICATION_VERSION 1
